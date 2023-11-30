@@ -49,3 +49,7 @@ input {
 .view-label {
   @apply text-right font-bold w-32 pr-4;
 }
+
+.darkmode {
+  @apply bg-[#2f2f2f] text-white border border-indigo-500;
+}
