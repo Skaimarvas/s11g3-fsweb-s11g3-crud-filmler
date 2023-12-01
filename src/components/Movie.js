@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useHistory } from "react-router-dom";
+import swal from "sweetalert";
 
 import axios from "axios";
 
@@ -10,6 +11,25 @@ const Movie = (props) => {
 
   const { id } = useParams();
   const { push } = useHistory();
+
+  const alertAndDelete = () => {
+    swal({
+      title: "Bak Emin Misin?",
+      text: "Eğer silersen, eşşek gibi tekrar eklersin ha!",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    }).then((willDelete) => {
+      if (willDelete) {
+        deleteMovie(id);
+        swal("Al işte! Film silindi", {
+          icon: "success",
+        });
+      } else {
+        swal("Eh! Filmi silmediğine göre duruyor yerinde! ");
+      }
+    });
+  };
 
   useEffect(() => {
     axios
@@ -66,9 +86,7 @@ const Movie = (props) => {
         <button
           type="button"
           className="myButton bg-red-600 hover:bg-red-500"
-          onClick={() => {
-            deleteMovie(movie.id);
-          }}
+          onClick={alertAndDelete}
         >
           Sil
         </button>

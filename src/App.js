@@ -74,6 +74,23 @@ const App = (props) => {
     const someFav = favoriteMovies.some(
       (fav) => fav.id === movie.id || fav.title === movie.title
     );
+
+    if (someFav) {
+      swal({
+        title: "Hey!",
+        text: "You already have this movie in your favorites!",
+        icon: "warning",
+        button: "Aww yiss!",
+      });
+      return;
+    }
+
+    swal({
+      title: "Good job!",
+      text: "Your fav movie is set!",
+      icon: "success",
+      button: "Aww yiss!",
+    });
     setFavoriteMovies((prevFav) =>
       !someFav ? [...prevFav, movie] : [...prevFav]
     );
