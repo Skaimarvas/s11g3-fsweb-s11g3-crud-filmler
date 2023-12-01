@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { nanoid } from "nanoid";
 import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
+import useAxios, { REQ_TYPES } from "../hooks/useAxios";
 
 export default function AddMovieForm(props) {
-  const [addMovie, setAddMovie] = useState({
+  const [movies, getData, setMovies] = useAxios({
     title: "",
     director: "",
     genre: "",
@@ -15,35 +14,19 @@ export default function AddMovieForm(props) {
 
   const [error, setError] = useState("");
 
-  const { setMovies, movies } = props;
-
   const history = useHistory();
 
-  const { title, director, genre, metascore, description } = addMovie;
-
   const handleChange = (e) => {
-    setAddMovie({
-      ...addMovie,
+    setMovies({
+      ...movies,
       [e.target.name]: e.target.value,
     });
   };
+  const { title, director, genre, metascore, description } = movies;
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const someMov = movies.some(
-      (mov) => mov.id === addMovie.id || mov.title === addMovie.title
-    );
-
-    console.log("SOMEMOVE AND ADDMOVIE", someMov, addMovie);
-
-    !someMov &&
-      axios.post("http://localhost:9000/api/movies", addMovie).then((res) => {
-        console.log("ADD MOVIE DATA", res.data);
-        setMovies([...res.data]);
-        history.push("/movies");
-      });
-
-    someMov && setError("Bu film halihazırda var");
+    getData("/movies", REQ_TYPES.POST, "/movies", props.updatedMovies, movies);
   };
 
   return (
@@ -51,7 +34,7 @@ export default function AddMovieForm(props) {
       <form onSubmit={handleSubmit}>
         <div className="p-5 pb-3 border-b border-zinc-200">
           <h4 className="text-xl font-bold">
-            Ekleniyor <strong>{addMovie.title}</strong>
+            Ekleniyor <strong>{movies.title}</strong>
           </h4>
         </div>
 

@@ -3,6 +3,7 @@ import React from "react";
 import MovieListItem from "./MovieListItem";
 import MovieFooter from "./MovieFooter";
 import FavoriteMovieList from "./FavoriteMovieList";
+import useAxios from "../hooks/useAxios";
 
 const MovieList = (props) => {
   const { movies, favoriteMovies } = props;
@@ -22,13 +23,13 @@ const MovieList = (props) => {
           </thead>
 
           <tbody className="text-sm">
-            {movies.map((movie) => (
+            {movies?.map((movie) => (
               <MovieListItem key={movie.id} movie={movie} />
             ))}
           </tbody>
         </table>
       </div>
-      <MovieFooter totalMovies={movies.length} />
+      <MovieFooter totalMovies={movies?.length} />
     </div>
   );
 };
