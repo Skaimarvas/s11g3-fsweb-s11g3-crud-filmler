@@ -13,12 +13,51 @@ import AddMovieForm from "./components/AddMovieForm";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
 import useAxios, { REQ_TYPES } from "./hooks/useAxios";
+import swal from "sweetalert";
 
 const App = (props) => {
   const [favoriteMovies, setFavoriteMovies] = useState([]);
   const [movies, getData] = useAxios([]);
+  const [darkmode, setDarkmode] = useState(false);
+
+  const toggleDarkMode = () => {
+    localStorage.setItem("thememode", !darkmode);
+    console.log("toggleDarkmode from", darkmode, "to", !darkmode);
+    setDarkmode(!darkmode);
+
+    const html = document.querySelector("html");
+    html.classList.toggle("dark", !darkmode);
+  };
+
+  const initialDarkModeDetection = () => {
+    const darkModeLocalData = localStorage.getItem("thememode");
+    const html = document.querySelector("html");
+    if (
+      JSON.parse(darkModeLocalData) === true ||
+      (darkModeLocalData === null &&
+        window.matchMedia("(prefers-color-scheme:dark)").matches)
+    ) {
+      setDarkmode(true);
+      html.classList.add("dark");
+    } else {
+      setDarkmode(false);
+      html.classList.remove("dark");
+    }
+    window
+      .matchMedia("(prefers-color-scheme:dark)")
+      .addEventListener("change", ({ matches }) => {
+        if (matches) {
+          setDarkmode(true);
+          html.classList.add("dark");
+        } else {
+          setDarkmode(false);
+          html.classList.remove("dark");
+        }
+      });
+  };
 
   useEffect(() => {
+    initialDarkModeDetection();
     getData("/movies");
   }, []);
 
@@ -48,6 +87,9 @@ const App = (props) => {
 
       <div className="max-w-4xl mx-auto px-3 pb-4">
         <MovieHeader />
+        <button className="bg-cyan-900 text-white p-1" onClick={toggleDarkMode}>
+          {darkmode ? "Dark Mode Açık" : "Dark Mode Kapalı"}
+        </button>
         <div className="flex flex-col sm:flex-row gap-4">
           <FavoriteMovieList favoriteMovies={favoriteMovies} />
 
